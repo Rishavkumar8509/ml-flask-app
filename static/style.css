@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    overflow:hidden;
+}
+
+/* Animated Background */
+
+body::before{
+    content:'';
+    position:absolute;
+    width:500px;
+    height:500px;
+    background:#00f5ff;
+    border-radius:50%;
+    top:-150px;
+    left:-150px;
+    filter:blur(120px);
+    animation:move 8s infinite alternate;
+}
+
+body::after{
+    content:'';
+    position:absolute;
+    width:500px;
+    height:500px;
+    background:#ff00ea;
+    border-radius:50%;
+    bottom:-150px;
+    right:-150px;
+    filter:blur(120px);
+    animation:move2 10s infinite alternate;
+}
+
+@keyframes move{
+    0%{
+        transform:translate(0,0);
+    }
+    100%{
+        transform:translate(100px,50px);
+    }
+}
+
+@keyframes move2{
+    0%{
+        transform:translate(0,0);
+    }
+    100%{
+        transform:translate(-100px,-50px);
+    }
+}
+
+/* Main Container */
+
+.container{
+    position:relative;
+    z-index:10;
+    width:400px;
+    padding:40px;
+    border-radius:25px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+    text-align:center;
+    animation:fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.container h1{
+    color:white;
+    margin-bottom:30px;
+    font-size:34px;
+    font-weight:700;
+}
+
+/* Inputs */
+
+input,select{
+    width:100%;
+    padding:14px;
+    margin:12px 0;
+    border:none;
+    border-radius:12px;
+    background:rgba(255,255,255,0.15);
+    color:white;
+    font-size:16px;
+    outline:none;
+    transition:0.3s;
+}
+
+input::placeholder{
+    color:#ddd;
+}
+
+select option{
+    color:black;
+}
+
+input:focus,
+select:focus{
+    transform:scale(1.03);
+    background:rgba(255,255,255,0.25);
+}
+
+/* Buttons */
+
+button{
+    width:100%;
+    padding:14px;
+    margin-top:18px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(45deg,#00dbde,#fc00ff);
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.4s;
+}
+
+button:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* Prediction Result */
+
+h2{
+    margin-top:25px;
+    color:#00ffae;
+    font-size:28px;
+    animation:pulse 1s infinite alternate;
+}
+
+@keyframes pulse{
+    from{
+        transform:scale(1);
+    }
+    to{
+        transform:scale(1.05);
+    }
+}
+
+/* Error Message */
+
+h3{
+    color:#ff4b5c;
+    margin-top:15px;
+}
+
+/* Links */
+
+a{
+    text-decoration:none;
+}

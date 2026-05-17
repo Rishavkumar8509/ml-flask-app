@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-family:Arial;
+            color:white;
+            overflow:hidden;
+            padding:10px;
+        }
+
+        /* PARTICLES */
+
+        #particles-js{
+            position:fixed;
+            width:100%;
+            height:100%;
+            top:0;
+            left:0;
+            z-index:-1;
+        }
+
+        /* CONTAINER */
+
+        .container{
+            width:95%;
+            max-width:650px;
+            background:rgba(255,255,255,0.05);
+            backdrop-filter:blur(14px);
+            padding:20px;
+            border-radius:28px;
+            box-shadow:0 0 40px rgba(0,0,0,0.5);
+            text-align:center;
+            animation:fadeIn 1s ease;
+        }
+
+        /* TITLE */
+
+        .main-heading{
+            font-size:42px;
+            font-weight:bold;
+            margin-bottom:6px;
+
+            background:linear-gradient(
+                90deg,
+                #ff512f,
+                #dd2476,
+                #8b5cf6,
+                #00c6ff,
+                #ff512f
+            );
+
+            background-size:300% auto;
+
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+
+            animation:
+                shine 5s linear infinite,
+                zoomGlow 2s ease-in-out infinite alternate;
+        }
+
+        .sub-heading{
+            color:#cbd5e1;
+            font-size:15px;
+            margin-bottom:10px;
+            letter-spacing:1px;
+        }
+
+        @keyframes shine{
+
+            to{
+                background-position:300% center;
+            }
+
+        }
+
+        @keyframes zoomGlow{
+
+            from{
+                transform:scale(1);
+                filter:drop-shadow(0 0 8px #ff512f);
+            }
+
+            to{
+                transform:scale(1.04);
+                filter:drop-shadow(0 0 22px #8b5cf6);
+            }
+
+        }
+
+        /* CLOCK */
+
+        #clock{
+            margin-bottom:12px;
+            color:#ffffff;
+            font-size:16px;
+            font-weight:bold;
+        }
+
+        /* ACCURACY */
+
+        .accuracy-box{
+            background:#111827;
+            padding:16px;
+            border-radius:18px;
+            margin-bottom:16px;
+            box-shadow:0 0 20px rgba(255,255,255,0.08);
+            transition:0.4s;
+        }
+
+        .accuracy-box:hover{
+            transform:scale(1.02);
+        }
+
+        .accuracy-box h3{
+            color:#94a3b8;
+            margin-bottom:6px;
+            font-size:17px;
+        }
+
+        .accuracy-box h2{
+            color:#22c55e;
+            font-size:30px;
+        }
+
+        /* INPUT */
+
+        input,
+        select{
+            width:100%;
+            padding:13px;
+            margin-top:10px;
+            border:none;
+            border-radius:14px;
+            outline:none;
+            background:#111827;
+            color:white;
+            font-size:15px;
+            transition:0.3s;
+        }
+
+        input:focus,
+        select:focus{
+            box-shadow:0 0 15px rgba(255,81,47,0.5);
+        }
+
+        /* PREDICT BUTTON */
+
+        .predict-btn{
+            width:100%;
+            padding:14px;
+            margin-top:16px;
+            border:none;
+            border-radius:16px;
+            background:linear-gradient(
+                135deg,
+                #ff512f,
+                #dd2476,
+                #8b5cf6
+            );
+            color:white;
+            font-size:17px;
+            cursor:pointer;
+            transition:0.4s;
+            font-weight:bold;
+            box-shadow:0 0 20px rgba(221,36,118,0.4);
+        }
+
+        .predict-btn:hover{
+            transform:scale(1.04);
+            box-shadow:0 0 28px rgba(139,92,246,0.6);
+        }
+
+        /* RESULT */
+
+        .result{
+            margin-top:16px;
+            padding:16px;
+            border-radius:18px;
+            background:#111827;
+            box-shadow:0 0 20px rgba(255,255,255,0.08);
+            animation:fadeUp 0.7s ease;
+        }
+
+        .result h2{
+            font-size:25px;
+            margin-bottom:12px;
+        }
+
+        /* BADGES */
+
+        .badge{
+            display:inline-block;
+            padding:6px 15px;
+            border-radius:30px;
+            margin-bottom:10px;
+            font-size:12px;
+            font-weight:bold;
+        }
+
+        .success{
+            background:#14532d;
+            color:#4ade80;
+        }
+
+        .danger{
+            background:#7f1d1d;
+            color:#f87171;
+        }
+
+        /* GRAPH BUTTON */
+
+        .graph-btn{
+            display:inline-block;
+            width:100%;
+            padding:13px;
+            border-radius:14px;
+            text-decoration:none;
+            background:linear-gradient(
+                135deg,
+                #00c6ff,
+                #0072ff,
+                #00f5a0
+            );
+            color:white;
+            font-size:16px;
+            font-weight:bold;
+            transition:0.4s;
+            box-shadow:0 0 20px rgba(0,198,255,0.4);
+        }
+
+        .graph-btn:hover{
+            transform:scale(1.04);
+            box-shadow:0 0 25px rgba(0,245,160,0.6);
+        }
+
+        /* LOGOUT BUTTON */
+
+        .logout{
+            display:inline-block;
+            margin-top:14px;
+            padding:10px 26px;
+            border-radius:14px;
+            background:linear-gradient(
+                135deg,
+                #16a34a,
+                #22c55e,
+                #4ade80
+            );
+            color:white;
+            text-decoration:none;
+            font-size:16px;
+            font-weight:bold;
+            transition:0.4s;
+            box-shadow:0 0 18px rgba(34,197,94,0.4);
+        }
+
+        .logout:hover{
+            transform:scale(1.06);
+            box-shadow:0 0 25px rgba(74,222,128,0.7);
+        }
+
+        /* ANIMATION */
+
+        @keyframes fadeIn{
+
+            from{
+                opacity:0;
+                transform:translateY(20px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+
+        }
+
+        @keyframes fadeUp{
+
+            from{
+                opacity:0;
+                transform:translateY(25px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-height:850px){
+
+            .container{
+                transform:scale(0.92);
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div id="particles-js"></div>
+
+<div class="container">
+
+    <!-- TITLE -->
+
+    <div class="main-heading">
+
+        Purchase Prediction
+
+    </div>
+
+    <div class="sub-heading">
+
+        Machine Learning Prediction Dashboard
+
+    </div>
+
+    <!-- CLOCK -->
+
+    <h3 id="clock"></h3>
+
+    <!-- ACCURACY -->
+
+    <div class="accuracy-box">
+
+        <h3>Model Accuracy</h3>
+
+        <h2>{{ accuracy }}%</h2>
+
+    </div>
+
+    <!-- FORM -->
+
+    <form action="/predict" method="POST">
+
+        <select name="gender" required>
+
+            <option value="">Select Gender</option>
+
+            <option value="Male">Male</option>
+
+            <option value="Female">Female</option>
+
+        </select>
+
+        <input type="number"
+               name="age"
+               placeholder="Enter Age"
+               required>
+
+        <input type="number"
+               name="salary"
+               placeholder="Enter Salary"
+               required>
+
+        <button type="submit"
+                class="predict-btn"
+                id="predictBtn">
+
+            ✨ Predict Now
+
+        </button>
+
+    </form>
+
+    <!-- RESULT -->
+
+    {% if prediction %}
+
+    <div class="result">
+
+        {% if prediction == "Purchased" %}
+
+            <div class="badge success">
+
+                SUCCESS
+
+            </div>
+
+            <h2 style="color:#22c55e;">
+
+                ✔ {{ prediction }}
+
+            </h2>
+
+        {% else %}
+
+            <div class="badge danger">
+
+                FAILED
+
+            </div>
+
+            <h2 style="color:#ef4444;">
+
+                ✖ {{ prediction }}
+
+            </h2>
+
+        {% endif %}
+
+        <!-- GRAPH BUTTON -->
+
+        <a href="/graph/{{ prediction }}"
+           class="graph-btn">
+
+            📊 View Graph
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+    <!-- LOGOUT -->
+
+    <a href="/logout" class="logout">
+
+        ⬅ Logout
+
+    </a>
+
+</div>
+
+<!-- CLOCK -->
+
+<script>
+
+function updateClock(){
+
+    let now = new Date();
+
+    document.getElementById("clock").innerHTML =
+        now.toLocaleTimeString();
+
+}
+
+setInterval(updateClock,1000);
+
+updateClock();
+
+</script>
+
+<!-- BUTTON LOADING -->
+
+<script>
+
+document.querySelector("form").addEventListener("submit", function(){
+
+    document.getElementById("predictBtn").innerHTML =
+        "Predicting...";
+
+});
+
+</script>
+
+<!-- AI VOICE ASSISTANT -->
+
+<script>
+
+window.onload = function(){
+
+    {% if prediction %}
+
+        let message = "";
+
+        {% if prediction == "Purchased" %}
+
+            message = "Customer is likely to purchase";
+
+        {% else %}
+
+            message = "Customer is not likely to purchase";
+
+        {% endif %}
+
+        let speech = new SpeechSynthesisUtterance();
+
+        speech.text = message;
+
+        speech.volume = 1;
+
+        speech.rate = 1;
+
+        speech.pitch = 1;
+
+        speech.lang = "en-US";
+
+        window.speechSynthesis.speak(speech);
+
+    {% endif %}
+
+};
+
+</script>
+
+<!-- PARTICLES -->
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+<script>
+
+particlesJS("particles-js", {
+
+    particles: {
+
+        number: {
+            value: 90
+        },
+
+        size: {
+            value: 3
+        },
+
+        move: {
+            speed: 2
+        },
+
+        line_linked: {
+            enable: true
+        }
+
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>
+

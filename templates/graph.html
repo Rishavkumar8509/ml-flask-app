@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction Graph</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-family:Arial, sans-serif;
+            color:white;
+            overflow:hidden;
+            padding:12px;
+        }
+
+        /* PARTICLES */
+
+        #particles-js{
+            position:fixed;
+            width:100%;
+            height:100%;
+            top:0;
+            left:0;
+            z-index:-1;
+        }
+
+        /* MAIN BOX */
+
+        .container{
+            width:95%;
+            max-width:850px;
+            background:rgba(255,255,255,0.05);
+            backdrop-filter:blur(12px);
+            padding:24px;
+            border-radius:28px;
+            text-align:center;
+            box-shadow:0 0 40px rgba(0,0,0,0.5);
+            animation:fadeIn 1s ease;
+        }
+
+        /* ATTRACTIVE TITLE */
+
+        .title{
+            font-size:46px;
+            font-weight:bold;
+            margin-bottom:10px;
+            background:linear-gradient(
+                90deg,
+                #00c6ff,
+                #0072ff,
+                #00f5a0,
+                #00c6ff
+            );
+            background-size:300% auto;
+
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+
+            animation:
+                shine 4s linear infinite,
+                zoomGlow 2s ease-in-out infinite alternate;
+        }
+
+        .sub-title{
+            color:#cbd5e1;
+            font-size:16px;
+            margin-bottom:18px;
+            letter-spacing:1px;
+        }
+
+        @keyframes shine{
+
+            to{
+                background-position:300% center;
+            }
+
+        }
+
+        @keyframes zoomGlow{
+
+            from{
+                transform:scale(1);
+                filter:drop-shadow(0 0 8px #00c6ff);
+            }
+
+            to{
+                transform:scale(1.04);
+                filter:drop-shadow(0 0 20px #00f5a0);
+            }
+
+        }
+
+        /* RESULT */
+
+        h2{
+            margin-bottom:18px;
+            font-size:30px;
+        }
+
+        .purchased{
+            color:#22c55e;
+            text-shadow:0 0 20px #22c55e;
+        }
+
+        .not-purchased{
+            color:#ef4444;
+            text-shadow:0 0 20px #ef4444;
+        }
+
+        /* GRAPH AREA */
+
+        .graph-container{
+            width:100%;
+            height:320px;
+            background:#111827;
+            border-radius:22px;
+            padding:20px;
+            display:flex;
+            justify-content:space-evenly;
+            align-items:flex-end;
+            position:relative;
+            overflow:hidden;
+            box-shadow:0 0 20px rgba(255,255,255,0.08);
+        }
+
+        /* GRID LINES */
+
+        .line{
+            position:absolute;
+            width:100%;
+            height:1px;
+            background:rgba(255,255,255,0.08);
+            left:0;
+        }
+
+        .line1{ bottom:25%; }
+        .line2{ bottom:50%; }
+        .line3{ bottom:75%; }
+
+        /* BAR */
+
+        .bar-box{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            width:160px;
+        }
+
+        .bar{
+            width:90px;
+            border-radius:18px 18px 0 0;
+            position:relative;
+            animation:grow 2s ease forwards;
+        }
+
+        .green-bar{
+            background:linear-gradient(180deg,#22c55e,#15803d);
+            box-shadow:0 0 20px rgba(34,197,94,0.5);
+        }
+
+        .red-bar{
+            background:linear-gradient(180deg,#ef4444,#b91c1c);
+            box-shadow:0 0 20px rgba(239,68,68,0.5);
+        }
+
+        .percent{
+            position:absolute;
+            top:-34px;
+            width:100%;
+            text-align:center;
+            font-size:20px;
+            font-weight:bold;
+        }
+
+        .label{
+            margin-top:12px;
+            font-size:18px;
+            font-weight:bold;
+        }
+
+        /* STATS BOX */
+
+        .stats{
+            display:flex;
+            justify-content:center;
+            gap:18px;
+            margin-top:20px;
+            flex-wrap:wrap;
+        }
+
+        .card{
+            flex:1;
+            min-width:220px;
+            background:#111827;
+            padding:18px;
+            border-radius:20px;
+            box-shadow:0 0 20px rgba(255,255,255,0.08);
+            animation:fadeUp 1s ease;
+            transition:0.4s;
+        }
+
+        .card:hover{
+            transform:translateY(-5px);
+        }
+
+        .card h3{
+            margin-bottom:10px;
+            color:#94a3b8;
+            font-size:18px;
+        }
+
+        .card h1{
+            font-size:34px;
+        }
+
+        .green{
+            color:#22c55e;
+        }
+
+        .red{
+            color:#ef4444;
+        }
+
+        /* BUTTON */
+
+        .btn{
+            display:inline-block;
+            margin-top:24px;
+            text-decoration:none;
+            background:linear-gradient(
+                135deg,
+                #8b5cf6,
+                #ec4899,
+                #f43f5e
+            );
+            color:white;
+            padding:14px 36px;
+            border-radius:16px;
+            font-size:18px;
+            transition:0.4s;
+            font-weight:bold;
+            box-shadow:0 0 20px rgba(236,72,153,0.4);
+        }
+
+        .btn:hover{
+            transform:scale(1.07);
+            box-shadow:0 0 28px rgba(244,63,94,0.6);
+        }
+
+        /* ANIMATION */
+
+        @keyframes grow{
+
+            from{
+                height:0;
+            }
+
+            to{
+                height:var(--height);
+            }
+
+        }
+
+        @keyframes fadeIn{
+
+            from{
+                opacity:0;
+                transform:translateY(20px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+
+        }
+
+        @keyframes fadeUp{
+
+            from{
+                opacity:0;
+                transform:translateY(30px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-height:850px){
+
+            .container{
+                transform:scale(0.92);
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div id="particles-js"></div>
+
+<div class="container">
+
+    <!-- TITLE -->
+
+    <div class="title">
+
+        Prediction Graph
+
+    </div>
+
+    <div class="sub-title">
+
+        Machine Learning Visualization Dashboard
+
+    </div>
+
+    <!-- RESULT -->
+
+    {% if result == "Purchased" %}
+
+        <h2 class="purchased">
+
+            ✔ Purchased Successfully
+
+        </h2>
+
+    {% else %}
+
+        <h2 class="not-purchased">
+
+            ✖ Not Purchased
+
+        </h2>
+
+    {% endif %}
+
+    <!-- GRAPH -->
+
+    <div class="graph-container">
+
+        <div class="line line1"></div>
+        <div class="line line2"></div>
+        <div class="line line3"></div>
+
+        {% if result == "Purchased" %}
+
+        <!-- PURCHASED HIGH -->
+
+        <div class="bar-box">
+
+            <div class="bar green-bar"
+                 style="--height:220px; height:220px;">
+
+                <div class="percent">70%</div>
+
+            </div>
+
+            <div class="label green">
+
+                Purchased
+
+            </div>
+
+        </div>
+
+        <div class="bar-box">
+
+            <div class="bar red-bar"
+                 style="--height:100px; height:100px;">
+
+                <div class="percent">30%</div>
+
+            </div>
+
+            <div class="label red">
+
+                Not Purchased
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <!-- NOT PURCHASED HIGH -->
+
+        <div class="bar-box">
+
+            <div class="bar green-bar"
+                 style="--height:100px; height:100px;">
+
+                <div class="percent">30%</div>
+
+            </div>
+
+            <div class="label green">
+
+                Purchased
+
+            </div>
+
+        </div>
+
+        <div class="bar-box">
+
+            <div class="bar red-bar"
+                 style="--height:220px; height:220px;">
+
+                <div class="percent">70%</div>
+
+            </div>
+
+            <div class="label red">
+
+                Not Purchased
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <!-- STATS -->
+
+    <div class="stats">
+
+        {% if result == "Purchased" %}
+
+        <div class="card">
+
+            <h3>Purchased Chance</h3>
+
+            <h1 class="green">70%</h1>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Not Purchased</h3>
+
+            <h1 class="red">30%</h1>
+
+        </div>
+
+        {% else %}
+
+        <div class="card">
+
+            <h3>Purchased Chance</h3>
+
+            <h1 class="green">30%</h1>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Not Purchased</h3>
+
+            <h1 class="red">70%</h1>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <!-- BUTTON -->
+
+    <a href="/dashboard" class="btn">
+
+        ⬅ Back To Dashboard
+
+    </a>
+
+</div>
+
+<!-- PARTICLES -->
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+<script>
+
+particlesJS("particles-js", {
+
+    particles: {
+
+        number: {
+            value: 90
+        },
+
+        size: {
+            value: 3
+        },
+
+        move: {
+            speed: 2
+        },
+
+        line_linked: {
+            enable: true
+        }
+
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>
+
