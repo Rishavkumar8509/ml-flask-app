@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+import os
 import pickle
 import numpy as np
-import os
+
+from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
 app.secret_key = "secretkey"
@@ -9,7 +10,7 @@ app.secret_key = "secretkey"
 # 🔥 BASE PATH (IMPORTANT FOR DEPLOY)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Load model and scaler
+# 🔥 Load model and scaler (SAFE WAY)
 model = pickle.load(open(os.path.join(BASE_DIR, "model.pkl"), "rb"))
 scaler = pickle.load(open(os.path.join(BASE_DIR, "scaler.pkl"), "rb"))
 
@@ -17,7 +18,7 @@ scaler = pickle.load(open(os.path.join(BASE_DIR, "scaler.pkl"), "rb"))
 accuracy = 87.5
 
 
-# LOGIN PAGE
+# 🔐 LOGIN PAGE
 @app.route('/', methods=['GET', 'POST'])
 def login():
 
@@ -41,7 +42,7 @@ def login():
     return render_template("login.html")
 
 
-# DASHBOARD
+# 📊 DASHBOARD
 @app.route('/dashboard')
 def dashboard():
 
@@ -54,7 +55,7 @@ def dashboard():
     )
 
 
-# PREDICTION
+# 🤖 PREDICTION
 @app.route('/predict', methods=['POST'])
 def predict():
 
@@ -91,7 +92,7 @@ def predict():
     )
 
 
-# GRAPH PAGE (NO MATPLOTLIB NEEDED)
+# 📈 GRAPH PAGE (HTML BASED - NO matplotlib ISSUE)
 @app.route('/graph/<result>')
 def graph(result):
 
@@ -104,13 +105,16 @@ def graph(result):
     )
 
 
-# LOGOUT
+# 🚪 LOGOUT
 @app.route('/logout')
 def logout():
 
     session.pop('user', None)
+
     return redirect(url_for('login'))
 
 
+# 🚀 RUN APP (IMPORTANT FOR RENDER)
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))   # 🔥 IMPORTANT FIX
+    app.run(host="0.0.0.0", port=port)
